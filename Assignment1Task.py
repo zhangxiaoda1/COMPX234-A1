@@ -23,17 +23,21 @@ class Assignment1:
     def startSimulation(self):
         # Create Machine and Printer threads
         # Write code here
+        # Create machine threads - one for each machine in the system
         for id in range(self.NUM_MACHINES):
             thread = self.machineThread(id, self)
+            # Add to machine thread list
             self.mThreads.append(thread)
+        # Create printer threads - one for each printer in the system
         for id in range(self.NUM_PRINTERS):
             thread = self.printerThread(id, self)
-            self.pThreads.append(thread)
-            
+            self.pThreads.append(thread)# Add to printer thread list
         # Start all the threads
         # Write code here
+        # Launch all machine threads to begin generating print requests
         for thread in self.mThreads:
             thread.start()
+        # Launch all printer threads to begin processing print requests
         for thread in self.pThreads:
             thread.start()
 
@@ -45,6 +49,8 @@ class Assignment1:
 
         # Wait until all printer threads finish by joining them
         # Write code here
+        # Ensure main thread waits for all printer threads to complete their current tasks
+        # Prevents premature termination of print jobs before completion
         for thread in self.pThreads:
             thread.join()
 
@@ -61,6 +67,8 @@ class Assignment1:
                 self.printerSleep()
                 # Grab the request at the head of the queue and print it
                 # Write code here
+                # When printer finishes sleeping, process next print job in queue
+                # Call printDox to handle queue retrieval and printing
                 self.printDox(self.printerID)
         def printerSleep(self):
             sleepSeconds = random.randint(1, self.outer.MAX_PRINTER_SLEEP)
@@ -84,6 +92,8 @@ class Assignment1:
                 self.machineSleep()
                 # Machine wakes up and sends a print request
                 # Write code here
+                # After waking from sleep, generate a new print request
+                # Call printRequest to create and queue the document
                 self.printRequest(self.machineID)
         def machineSleep(self):
             sleepSeconds = random.randint(1, self.outer.MAX_MACHINE_SLEEP)
